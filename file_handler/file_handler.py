@@ -66,23 +66,14 @@ class TxtHandler:
 
 class CsvHandler:
 	def to_read(self, file_path, lines_count=LINES_TO_READ):
-		row_num = 0
-
-		with open(file_path) as f:
-			reader = csv.reader(f)
-			for row in reader:
-				if row_num < lines_count:
-					print(row[0], end='\n')
-					row_num += 1
+		rows = pd.read_csv(file_path, usecols=['Rows'], nrows=lines_count)
+		print(rows)
 
 	def to_write(self, file_path, text=TEXT):
 		text_to_write = text.split('\n')
 
-		with open(file_path, 'w', newline='') as f:
-			writer = csv.writer(f)
-
-			for row in text_to_write:
-				writer.writerow([row])
+		df = pd.DataFrame({'Rows': text_to_write})
+		df.to_csv(file_path)
 
 
 class XlsHandler:
