@@ -1,9 +1,18 @@
 from os.path import splitext
 import csv
+import argparse
 
 
 LINES_TO_READ = 5
 TEXT = 'One\nTwo\nThree\nFour\nFive\nSix\nSeven\nEight\nNine\nTen'
+
+
+def is_valid_extension(parser, file):
+	extension = splitext(file)[1]
+	if extension not in ['.txt', '.csv', '.xls']:
+		parser.error(f'{extension} file extension is not supported.')
+	else:
+		return file
 
 
 class File:
@@ -75,14 +84,16 @@ class CsvHandler:
 
 if __name__ == '__main__':
 
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--mode', required=True, choices=['read', 'write'],
+							help='file mode to handle the file')
+
+	parser.add_argument('--file', required=True, type=lambda f: is_valid_extension(parser, f),
+							help='path to the file for reading/writing')
+
+	args = parser.parse_args()
+
 	factory = HandlerFactory()
-
-	txt_file = File('txt_file.txt')
-	csv_file = File('csv_file.csv')
-
 	handler = FileHandler()
-
-	handler.handle(mode='write', file=csv_file)
-	handler.handle(mode='read', file=csv_file)
-
+	handler.handle(mode=args.mode, file=File(args.file))
 
