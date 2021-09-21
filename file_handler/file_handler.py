@@ -1,6 +1,7 @@
 from os.path import splitext
 import csv
 import argparse
+import pandas as pd
 
 
 LINES_TO_READ = 5
@@ -33,6 +34,8 @@ class HandlerFactory:
 			return TxtHandler()
 		elif extension == '.csv':
 			return CsvHandler()
+		elif extension == '.xls':
+			return XlsHandler()
 		else:
 			raise RuntimeError(f"{extension} file extension is not supported.")
 
@@ -80,6 +83,18 @@ class CsvHandler:
 
 			for row in text_to_write:
 				writer.writerow([row])
+
+
+class XlsHandler:
+	def to_read(self, file_path, lines_count=LINES_TO_READ):
+		rows = pd.read_excel(file_path, usecols=['Rows'], nrows=lines_count)
+		print(rows)
+
+	def to_write(self, file_path, text=TEXT):
+		text_to_write = text.split('\n')
+
+		df = pd.DataFrame({'Rows': text_to_write})
+		df.to_excel(file_path)
 
 
 if __name__ == '__main__':
