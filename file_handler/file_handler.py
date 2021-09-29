@@ -28,27 +28,6 @@ class File:
 		handler.to_write(self.path)
 
 
-class HandlerFactory:
-	def get_handler(self, extension):
-		if extension == '.txt':
-			return TxtHandler()
-		elif extension == '.csv':
-			return CsvHandler()
-		elif extension == '.xls':
-			return XlsHandler()
-		else:
-			raise RuntimeError(f"{extension} file extension is not supported.")
-
-
-class FileHandler:
-	def handle(self, mode, file):
-		handler = factory.get_handler(file.extension)
-		if mode == 'read':
-			file.to_read(handler)
-		elif mode == 'write':
-			file.to_write(handler)
-
-
 class TxtHandler:
 	def to_read(self, file_path, lines_count=LINES_TO_READ):
 		line_num = 0
@@ -86,6 +65,30 @@ class XlsHandler:
 
 		df = pd.DataFrame({'Rows': text_to_write})
 		df.to_excel(file_path)
+
+
+class HandlerFactory:
+	handlers = {
+		'.txt': TxtHandler(),
+		'.csv': CsvHandler(),
+		'.xls': XlsHandler()
+	}
+
+	def get_handler(self, extension):
+
+		if extension in self.handlers:
+			return self.handlers[extension]
+		else:
+			raise RuntimeError(f"{extension} file extension is not supported.")
+
+
+class FileHandler:
+	def handle(self, mode, file):
+		handler = factory.get_handler(file.extension)
+		if mode == 'read':
+			file.to_read(handler)
+		elif mode == 'write':
+			file.to_write(handler)
 
 
 if __name__ == '__main__':
