@@ -43,6 +43,8 @@ class Person:
         self.last_name = person_info.get('last_name')
         self.age = person_info.get('age')
 
+        self.role = person_info['role']
+
         if not all([
             self.first_name,
             self.last_name,
@@ -57,6 +59,9 @@ class Person:
             raise RuntimeError(
                 "Invalid person's info: "
                 "should contains person_additional_data")
+
+    def __str__(self):
+        return f"{self.role}: {self.first_name} {self.last_name}"
             
 
 class Teacher(Person):
@@ -77,7 +82,7 @@ class Teacher(Person):
 
             raise RuntimeError(
                 "Invalid person's info: person_additional_data "
-                f"for {person_info['role']} should contains "
+                f"for {self.role} should contains "
                 "experience_month and salary.")
 
 
@@ -100,7 +105,7 @@ class Student(Person):
         if not self.average_mark:
             raise RuntimeError(
                 "Invalid person's info: person_additional_data "
-                f"for {person_info['role']} should contains "
+                f"for {self.role} should contains "
                 "average_mark.")
 
 
@@ -135,7 +140,7 @@ class School:
 
     def show_persons(self):
         for p in self.persons:
-            print(vars(p))
+            print(p)
 
 
 if __name__ == '__main__':
